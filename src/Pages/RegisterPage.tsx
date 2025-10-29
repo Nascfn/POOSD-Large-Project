@@ -51,6 +51,7 @@ function RegisterPage() {
   };
 
   const [open, setOpen] = React.useState(false);
+  const [openSuccess, setOpenSuccess] = React.useState(false);
 
   function isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -58,25 +59,37 @@ function RegisterPage() {
   }
 
   const handleRegister = () => {
-    if (passwordValue != passwordVerifyValue) {
-      setErrorMessage("Passwords do not match.");
+    if (
+      !firstNameValue ||
+      !lastNameValue ||
+      !emailValue ||
+      !passwordValue ||
+      !passwordVerifyValue
+    ) {
+      setErrorMessage("Must fill out all fields.");
+      setOpenSuccess(false);
       setOpen(true);
       return;
     } else if (isValidEmail(emailValue) === false) {
       setErrorMessage("Please enter a valid email address.");
+      setOpenSuccess(false);
+      setOpen(true);
+      return;
+    } else if (passwordValue != passwordVerifyValue) {
+      setErrorMessage("Passwords do not match.");
+      setOpenSuccess(false);
       setOpen(true);
       return;
     } else {
+      setErrorMessage("Successfully Registered.");
+      setOpen(false);
+      setOpenSuccess(true);
       console.log("email: " + emailValue);
       console.log("first name: " + firstNameValue);
       console.log("last name: " + lastNameValue);
       console.log("password: " + passwordValue);
       console.log("verified password: " + passwordVerifyValue);
     }
-  };
-
-  const textColor = (status: boolean) => {
-    const color = status === false ? "white" : "red";
   };
 
   return (
@@ -89,6 +102,24 @@ function RegisterPage() {
               aria-label="close"
               size="small"
               onClick={() => setOpen(false)}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+        >
+          {errorMessage}
+        </Alert>
+      </Collapse>
+
+      <Collapse in={openSuccess}>
+        <Alert
+          severity="success"
+          action={
+            <IconButton
+              aria-label="close"
+              size="small"
+              onClick={() => setOpenSuccess(false)}
             >
               <CloseIcon fontSize="inherit" />
             </IconButton>

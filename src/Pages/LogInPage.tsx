@@ -40,6 +40,10 @@ function LogInPage() {
       setErrorMessage("Please enter a valid email address.");
       setOpen(true);
       return;
+    } else if (!emailValue || !passwordValue) {
+      setErrorMessage("Must enter an email and a password.");
+      setOpen(true);
+      return;
     } else {
       console.log(emailValue);
       console.log(passwordValue);
