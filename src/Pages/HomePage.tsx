@@ -30,6 +30,7 @@ function HomePage() {
   const [budCatDropdownOpen, setBudDropDownOpen] = React.useState(false);
   const [newCat, setNewCat] = React.useState("");
   const [newCatBudget, setNewCatBudget] = React.useState("");
+  const [newExpenseDesc, setNewExpenseDesc] = React.useState("");
 
   const [rows, setRows] = useState<
     Array<{
@@ -37,6 +38,7 @@ function HomePage() {
       date: string;
       total: number;
       category: string;
+      description: string;
     }>
   >([]);
 
@@ -115,12 +117,20 @@ function HomePage() {
     console.log(newCatBudget);
   };
 
+  const handleNewExpenseDesc = (event: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    setNewExpenseDesc(event.target.value);
+    console.log(newExpenseDesc);
+  };
+
   const addExpense = () => {
     const newExpense = {
       id: rows.length + 1,
       date: getCurrentDateTime(),
       total: parseFloat(expenseValue) || 0,
       category: expCatDropVal,
+      description: newExpenseDesc,
     };
     setRows([...rows, newExpense]);
 
@@ -170,7 +180,7 @@ function HomePage() {
   };
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 90 },
+    //{ field: "id", headerName: "ID", width: 90 },
     {
       field: "date",
       headerName: "Date",
@@ -182,11 +192,17 @@ function HomePage() {
       headerName: "Total",
       type: "number",
       width: 110,
-      editable: false,
+      editable: true,
     },
     {
       field: "category",
       headerName: "Category",
+      sortable: true,
+      width: 160,
+    },
+    {
+      field: "description",
+      headerName: "Description",
       sortable: true,
       width: 160,
     },
@@ -242,7 +258,7 @@ function HomePage() {
               <DialogTitle>Add Expense</DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  Enter expense details here.
+                  Enter expense amount here.
                 </DialogContentText>
                 <TextField
                   id="outlined-basic"
@@ -268,6 +284,34 @@ function HomePage() {
                   }}
                   required={true}
                   onChange={handleExpenseInput}
+                />
+                <DialogContentText>
+                  Enter expense description here.
+                </DialogContentText>
+                <TextField
+                  id="outlined-basic"
+                  label="Expense Description"
+                  margin="dense"
+                  variant="outlined"
+                  InputLabelProps={{
+                    style: { color: "black" },
+                  }}
+                  sx={{
+                    input: { color: "black" },
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "black",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "black",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "black",
+                      },
+                    },
+                  }}
+                  required={true}
+                  onChange={handleNewExpenseDesc}
                 />
                 <DialogContentText>
                   Select category of expense.
