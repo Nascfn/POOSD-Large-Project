@@ -37,6 +37,12 @@ function HomePage() {
   const [budCatDropVal, setBudCatDropVal] = React.useState("");
   const [newCat, setNewCat] = React.useState("");
   const [newCatBudget, setNewCatBudget] = React.useState("");
+  const [newExpenseDesc, setNewExpenseDesc] = React.useState("");
+  const [categoryToDelete, setCategoryToDelete] = React.useState("");
+
+  const [expCatDropdownOpen, setExpDropDownOpen] = React.useState(false);
+  const [budCatDropdownOpen, setBudDropDownOpen] = React.useState(false);
+  const [delCatDropdownOpen, setDelCatDropdownOpen] = React.useState(false);
 
   const [rows, setRows] = useState<
     Array<{
@@ -95,26 +101,11 @@ function HomePage() {
     setCategoryToDelete("");
   };
 
-  const handleBudgetInput = (event: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setBudgetValue(event.target.value);
-    console.log(budgetValue);
-  };
-
-  const handleNewCatNameInput = (event: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setNewCat(event.target.value);
-    console.log(newCat);
-  };
-
-  const handleNewCatMaxInput = (event: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setNewCatBudget(event.target.value);
-    console.log(newCatBudget);
-  };
+  const handleExpenseInput = (event: React.ChangeEvent<HTMLInputElement>) => setExpenseValue(event.target.value);
+  const handleBudgetInput = (event: React.ChangeEvent<HTMLInputElement>) => setBudgetValue(event.target.value);
+  const handleNewCatNameInput = (event: React.ChangeEvent<HTMLInputElement>) => setNewCat(event.target.value);
+  const handleNewCatMaxInput = (event: React.ChangeEvent<HTMLInputElement>) => setNewCatBudget(event.target.value);
+  const handleNewExpenseDesc = (event: React.ChangeEvent<HTMLInputElement>) => setNewExpenseDesc(event.target.value);
 
   const addExpense = () => {
     if (!expCatDropVal) {
@@ -174,26 +165,10 @@ function HomePage() {
   };
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 90 },
-    {
-      field: "date",
-      headerName: "Date",
-      width: 200,
-      editable: false,
-    },
-    {
-      field: "total",
-      headerName: "Total",
-      type: "number",
-      width: 110,
-      editable: false,
-    },
-    {
-      field: "category",
-      headerName: "Category",
-      sortable: true,
-      width: 160,
-    },
+    { field: "date", headerName: "Date", width: 200, editable: false },
+    { field: "total", headerName: "Total", type: "number", width: 110, editable: true },
+    { field: "category", headerName: "Category", sortable: true, width: 160 },
+    { field: "description", headerName: "Description", sortable: true, width: 160 },
   ];
 
   const getCurrentDateTime = (): string => new Date().toLocaleString();
@@ -238,121 +213,92 @@ function HomePage() {
 
   return (
     <>
-      <div>
-        <Dialog open={openExp} onClose={handleExpClose}>
-          {categories.length === 0 ? (
-            <DialogTitle>Must Add a Category First</DialogTitle>
-          ) : (
-            <>
-              <DialogTitle>Add Expense</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Enter expense details here.
-                </DialogContentText>
-                <TextField
-                  id="outlined-basic"
-                  label="Expense Amount"
-                  margin="dense"
-                  variant="outlined"
-                  InputLabelProps={{
-                    style: { color: "black" },
-                  }}
-                  sx={{
-                    input: { color: "black" },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "black",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "black",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "black",
-                      },
-                    },
-                  }}
-                  required={true}
-                  onChange={handleExpenseInput}
-                />
-                <DialogContentText>
-                  Select category of expense.
-                </DialogContentText>
-                <FormControl sx={{ m: 1, minWidth: 200 }}>
-                  <InputLabel id="categories-drop-down">Category</InputLabel>
-                  <Select
-                    labelId="categories-drop-down"
-                    id="controlled-categories-drop-down"
-                    open={expCatDropdownOpen}
-                    onClose={handleExpDropClose}
-                    onOpen={handleExpDropOpen}
-                    value={expCatDropVal}
-                    label="Category"
-                    onChange={handleExpDropChange}
-                  >
-                    {categories.map((category) => (
-                      <MenuItem value={category.name}>{category.name}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </DialogContent>
-              <DialogActions>
-                <button onClick={addExpense}>Add</button>
-              </DialogActions>
-              <DialogTitle>Add to Budget</DialogTitle>
-              <DialogContent>
-                <DialogContentText>Enter amount to add.</DialogContentText>
-                <TextField
-                  id="outlined-basic"
-                  label="Expense Amount"
-                  margin="dense"
-                  variant="outlined"
-                  InputLabelProps={{
-                    style: { color: "black" },
-                  }}
-                  sx={{
-                    input: { color: "black" },
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "black",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "black",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "black",
-                      },
-                    },
-                  }}
-                  required={true}
-                  onChange={handleBudgetInput}
-                />
-                <DialogContentText>
-                  Select category to add to.
-                </DialogContentText>
-                <FormControl sx={{ m: 1, minWidth: 200 }}>
-                  <InputLabel id="categories-drop-down">Category</InputLabel>
-                  <Select
-                    labelId="categories-drop-down"
-                    id="controlled-categories-drop-down"
-                    open={budCatDropdownOpen}
-                    onClose={handleBudDropClose}
-                    onOpen={handleBudDropOpen}
-                    value={budCatDropVal}
-                    label="Category"
-                    onChange={handleBudDropChange}
-                  >
-                    {categories.map((category) => (
-                      <MenuItem value={category.name}>{category.name}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </DialogContent>
-              <DialogActions>
-                <button onClick={addToBudget}>Add</button>
-              </DialogActions>
-            </>
-          )}
-        </Dialog>
+      <Dialog open={openAddExpense} onClose={handleCloseAddExpense}>
+        <DialogTitle>Add Expense</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Enter expense amount and description.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Expense Amount"
+            type="number"
+            fullWidth
+            variant="outlined"
+            onChange={handleExpenseInput}
+            required
+          />
+          <TextField
+            margin="dense"
+            label="Expense Description"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={handleNewExpenseDesc}
+            required
+          />
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel id="exp-categories-drop-down">Category</InputLabel>
+            <Select
+              labelId="exp-categories-drop-down"
+              open={expCatDropdownOpen}
+              onClose={handleExpDropClose}
+              onOpen={handleExpDropOpen}
+              value={expCatDropVal}
+              label="Category"
+              onChange={handleExpDropChange}
+            >
+              {categories.map((category) => (
+                <MenuItem key={category.id} value={category.name}>{category.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAddExpense}>Cancel</Button>
+          <Button onClick={addExpense} variant="contained">Add Expense</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openEditBudget} onClose={handleCloseEditBudget}>
+        <DialogTitle>Edit Category Budget</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Select a category and set its new budget amount.
+          </DialogContentText>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel id="bud-categories-drop-down">Category</InputLabel>
+            <Select
+              labelId="bud-categories-drop-down"
+              open={budCatDropdownOpen}
+              onClose={handleBudDropClose}
+              onOpen={handleBudDropOpen}
+              value={budCatDropVal}
+              label="Category"
+              onChange={handleBudDropChange}
+            >
+              {categories.map((category) => (
+                <MenuItem key={category.id} value={category.name}>{category.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="New Budget Amount"
+            type="number"
+            fullWidth
+            variant="outlined"
+            onChange={handleBudgetInput}
+            required
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditBudget}>Cancel</Button>
+          <Button onClick={editBudget} variant="contained">Set Budget</Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog open={openAddCategory} onClose={handleCloseAddCategory}>
         <DialogTitle>Add New Category</DialogTitle>
