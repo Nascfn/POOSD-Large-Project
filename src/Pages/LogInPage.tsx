@@ -1,4 +1,3 @@
-// src/Pages/LogInPage.tsx
 import * as React from "react";
 import Alert from "@mui/material/Alert";
 import Collapse from "@mui/material/Collapse";
