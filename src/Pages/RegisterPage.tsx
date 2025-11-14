@@ -49,7 +49,7 @@ function RegisterPage() {
     return emailRegex.test(email);
   }
 
-const handleRegister = async () => { // 👈 Make the function async
+const handleRegister = async () => {
     if (
       !firstNameValue ||
       !lastNameValue ||
@@ -94,7 +94,7 @@ const handleRegister = async () => { // 👈 Make the function async
           setOpenSuccess(false);
           setOpen(true);
         } else {
-          localStorage.setItem('authToken', data.token); // API sends a token on signup
+          localStorage.setItem('authToken', data.token);
           setErrorMessage("Successfully Registered! You are now logged in.");
           setOpen(false); 
           setOpenSuccess(true);
