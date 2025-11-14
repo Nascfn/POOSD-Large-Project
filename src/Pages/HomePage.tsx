@@ -23,7 +23,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import { grey, blue, red } from '@mui/material/colors';
+import { grey, blue, red, orange, green } from '@mui/material/colors';
 
 function HomePage() {
   const [openAddCategory, setOpenAddCategory] = React.useState(false);
@@ -387,13 +387,13 @@ function HomePage() {
                     },
                     {
                       data: yellowData,
-                      color: grey[300],
+                      color: green[300],
                       stack: "total",
                       label: "Remaining"
                     },
                     {
                       data: redData,
-                      color: red[600],
+                      color: orange[600],
                       stack: "total",
                       label: "Over Budget"
                     },
