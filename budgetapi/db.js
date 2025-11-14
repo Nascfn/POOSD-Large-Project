@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const {randomBytes} = require('node:crypto');
+const {sendEmail} = require('./sendEmail.js');
 
 const uri = process.env.MONGO_URI;
 
@@ -18,7 +20,9 @@ const userSchema = new mongoose.Schema(
     name: String,
     email: { type: String, unique: true, index: true },
     passwordHash: String,
-    role: { type: String, default: "user" }, // ✅ important
+    role: { type: String, default: "user" },
+    isEmailVerified: { type: Boolean, default: false },
+    emailVerificationToken: String,
   },
   { timestamps: true, collection: "users" }
 );
@@ -50,20 +54,35 @@ const User = mongoose.model("User", userSchema);
 const Goal = mongoose.model("Goal", goalSchema);
 const Transaction = mongoose.model("Transaction", transactionSchema);
 
-/* =========================
-   Query Functions
-   ========================= */
+// Queries
 
 async function findUserByEmail(email) {
-  return User.findOne({ email }).lean();
+    return User.findOne({ email }).lean();
 }
-async function createUser({ name, email, passwordHash }) {
+
+async function findUserByEmailAndToken(email, token) {
+    return User.findOne({ email, emailVerificationToken: token }).lean();
+}
+
+async function createUser({ name, email, passwordHash}) {
   const u = await User.create({
     name,
     email,
     passwordHash,
     role: "user",
+    emailVerificationToken: generateRandomString(32),
   });
+  if (u) {
+    const verifyUrl = `${process.env.SITE_URL}/api/auth/verifyemail?email=${encodeURIComponent(u.email)}&code=${u.emailVerificationToken}`;
+    await sendEmail(
+      u.email,
+      "Welcome to BudgetApp!",
+      `<p>Hi ${u.name},</p>
+      <p>Thank you for registering at BudgetApp. We're excited to have you on board!</p>
+      <p>Please verify your email by clicking on this link: ${verifyUrl}</p>
+      <p>Best regards,<br/>The BudgetApp Team</p>`
+    );
+  }
   return {
     _id: u._id,
     name: u.name,
@@ -131,12 +150,19 @@ async function deleteUserCascade({ userId }) {
   };
 }
 
+function generateRandomString(length) {
+    const bytesNeeded = Math.ceil(length/2);
+    const randomBytesBuffer = randomBytes(bytesNeeded);
+    return randomBytesBuffer.toString('hex').slice(0, length);
+}
+
 module.exports = {
   connectToMongoDB,
   User,
   Goal,
   Transaction,
   findUserByEmail,
+  findUserByEmailAndToken,
   createUser,
   getUsers,
   createGoal,

@@ -17,6 +17,7 @@ const {
   connectToMongoDB,
   // users
   findUserByEmail,
+  findUserByEmailAndToken,
   createUser,
   getUsers,
   deleteUserCascade,
@@ -39,7 +40,6 @@ const app = express();
 const port = process.env.PORT;
 const apiRoute = "/api";
 const JWT_SECRET = process.env.JWT_SECRET;
-console.log('JWT_SECRET', JWT_SECRET);
 
 //Middleware
 
@@ -176,17 +176,39 @@ app.post(`${apiRoute}/auth/login`, async (req, res) => {
   }
 });
 
-// DELETE MY ACCOUNT
-app.delete(`${apiRoute}/auth/me`, authRequired, async (req, res) => {
-  try {
-    const result = await deleteUserCascade({ userId: req.user.id });
+app.get(`${apiRoute}/auth/verifyemail`, async (req, res) => {
+    const { email, code } = req.query || {};
+    if (!email || !code)
+      return res.status(400).json({ error: "Missing fields" });
 
-    res.clearCookie("token");
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to delete user" });
-  }
-});
+    const user = await findUserByEmailAndToken(email, code);
+    if (user) {
+        await mongoose.model("User").updateOne(
+            { _id: user._id },
+            {
+                $set: { isEmailVerified: true },
+                $unset: { emailVerificationToken: ""},
+            }
+        );
+        res.send("Email verified successfully.");
+    }
+    else {
+        res.send("Invalid verification link or email already verified.");
+    }
+  });
+  
+
+// // DELETE MY ACCOUNT
+// app.delete(`${apiRoute}/auth/me`, authRequired, async (req, res) => {
+//   try {
+//     const result = await deleteUserCascade({ userId: req.user.id });
+
+//     res.clearCookie("token");
+//     res.json(result);
+//   } catch (err) {
+//     res.status(500).json({ error: "Failed to delete user" });
+//   }
+// });
 
 // Users + Admin
 
