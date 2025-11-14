@@ -49,7 +49,7 @@ function RegisterPage() {
     return emailRegex.test(email);
   }
 
-  const handleRegister = () => {
+const handleRegister = async () => { // 👈 Make the function async
     if (
       !firstNameValue ||
       !lastNameValue ||
@@ -66,22 +66,51 @@ function RegisterPage() {
       setOpenSuccess(false);
       setOpen(true);
       return;
-    } else if (passwordValue !== passwordVerifyValue) { // Use !== for strict comparison
+    } else if (passwordValue !== passwordVerifyValue) {
       setErrorMessage("Passwords do not match.");
       setOpenSuccess(false);
       setOpen(true);
       return;
     } else {
-      setErrorMessage("Successfully Registered. Please check your email for verification.");
-      setOpen(false);
-      setOpenSuccess(true);
-      console.log("email: " + emailValue);
-      console.log("first name: " + firstNameValue);
-      console.log("last name: " + lastNameValue);
-      console.log("password: " + passwordValue);
+
+      // API Call
+      try {
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            name: `${firstNameValue} ${lastNameValue}`, 
+            email: emailValue,
+            password: passwordValue,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setErrorMessage(data.error || 'Registration failed. Please try again.');
+          setOpenSuccess(false);
+          setOpen(true);
+        } else {
+          localStorage.setItem('authToken', data.token); // API sends a token on signup
+          setErrorMessage("Successfully Registered! You are now logged in.");
+          setOpen(false); 
+          setOpenSuccess(true);
+          
+          setTimeout(() => {
+             navigate("/homepage");
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('Registration failed:', err);
+        setErrorMessage('A network error occurred. Please try again.');
+        setOpenSuccess(false);
+        setOpen(true);
+      }
     }
   };
-
 
   return (
     <>

@@ -34,19 +34,44 @@ function LogInPage() {
     return emailRegex.test(email);
   }
 
-  const handleLogIn = () => {
+const handleLogIn = async () => {
     if (!emailValue || !passwordValue) {
-      setErrorMessage("Please enter an email and password."); // Updated message
+      setErrorMessage("Please enter an email and password.");
       setOpen(true);
       return;
-    } else if (!isValidEmail(emailValue)) { // Check email validity second
+    } else if (!isValidEmail(emailValue)) {
       setErrorMessage("Please enter a valid email address.");
       setOpen(true);
       return;
     } else {
-      console.log(emailValue);
-      console.log(passwordValue);
-      navigate("/homepage");
+      
+      // API Call
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: emailValue,
+            password: passwordValue,
+          }),
+        });
+
+        const data = await response.json(); 
+
+        if (!response.ok) {
+          setErrorMessage(data.error || 'Log in failed. Please try again.');
+          setOpen(true);
+        } else {
+          localStorage.setItem('authToken', data.token);
+          navigate("/homepage");
+        }
+      } catch (err) {
+        console.error('Login failed:', err);
+        setErrorMessage('A network error occurred. Please try again.');
+        setOpen(true);
+      }
     }
   };
 
