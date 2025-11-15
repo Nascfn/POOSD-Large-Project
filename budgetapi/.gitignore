@@ -1,0 +1,6 @@
+.env
+node_modules
+docker-compose.yml
+public/index.html
+public/main.js
+.DS_Store
