@@ -433,7 +433,7 @@ function HomePage() {
     total += (maxData[i] || 0) - (catData[i] || 0);
   }
   const greenData = catData.map((data, index) => (diffData[index] >= 0 ? data : null));
-  const yellowData = diffData.map((data) => (data > 0 ? data : null));
+  const yellowData = diffData.map((data) => (data >= 0 ? data : null));
   const redData = catData.map((data, index) => (diffData[index] < 0 ? data : null));
 
   return (
