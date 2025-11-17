@@ -35,7 +35,7 @@ function HomePage() {
   const [openAddExpense, setOpenAddExpense] = React.useState(false);
   const [openEditBudget, setOpenEditBudget] = React.useState(false);
   const [openDeleteCategory, setOpenDeleteCategory] = React.useState(false);
-  
+
   const [openEditTransaction, setOpenEditTransaction] = React.useState(false);
   const [editTxId, setEditTxId] = React.useState("");
   const [editTxValue, setEditTxValue] = React.useState("");
@@ -78,7 +78,7 @@ function HomePage() {
     if (!token) return;
 
     try {
-      const headers = { 
+      const headers = {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       };
@@ -92,8 +92,8 @@ function HomePage() {
       const spendMap: Record<string, number> = {};
 
       const formattedRows = txData.map((tx: any) => {
-        const goal = tx.goalId; 
-        
+        const goal = tx.goalId;
+
         if (goal && goal._id) {
           spendMap[goal._id] = (spendMap[goal._id] || 0) + tx.amount;
         }
@@ -198,7 +198,7 @@ function HomePage() {
     }
 
     const selectedCategory = categories.find(c => c.name === expCatDropVal);
-    
+
     if (!selectedCategory) {
       console.error("Category not found");
       return;
@@ -217,12 +217,12 @@ function HomePage() {
           goalId: selectedCategory.id,
           amount: parseFloat(expenseValue) || 0,
           note: newExpenseDesc || "Expense",
-          date: new Date(), 
+          date: new Date(),
         }),
       });
 
       if (response.ok) {
-        fetchData(); 
+        fetchData();
         handleCloseAddExpense();
         setExpenseValue("");
         setNewExpenseDesc("");
@@ -270,24 +270,24 @@ function HomePage() {
 
     const token = localStorage.getItem('authToken');
     try {
-        const response = await fetch(`/api/transactions/${editTxId}`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                amount: parseFloat(editTxValue),
-                note: editTxDesc
-            }),
-        });
+      const response = await fetch(`/api/transactions/${editTxId}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: parseFloat(editTxValue),
+          note: editTxDesc
+        }),
+      });
 
-        if (response.ok) {
-            fetchData();
-            handleCloseEditTransaction();
-        }
+      if (response.ok) {
+        fetchData();
+        handleCloseEditTransaction();
+      }
     } catch (err) {
-        console.error("Error updating transaction", err);
+      console.error("Error updating transaction", err);
     }
   };
 
@@ -385,16 +385,16 @@ function HomePage() {
       disableColumnMenu: true,
       renderCell: (params) => (
         <>
-          <IconButton 
-            aria-label="edit" 
-            color="primary" 
+          <IconButton
+            aria-label="edit"
+            color="primary"
             onClick={() => handleOpenEditTransaction(params.row.id, params.row.total, params.row.description)}
           >
             <EditIcon />
           </IconButton>
-          <IconButton 
-            aria-label="delete" 
-            color="error" 
+          <IconButton
+            aria-label="delete"
+            color="error"
             onClick={() => deleteTransaction(params.row.id)}
           >
             <DeleteIcon />
@@ -432,9 +432,9 @@ function HomePage() {
   for (let i = 0; i < maxData.length; i++) {
     total += (maxData[i] || 0) - (catData[i] || 0);
   }
-  const greenData = catData.map((data, index) => (diffData[index] > 0 ? data : null));
+  const greenData = catData.map((data, index) => (diffData[index] >= 0 ? data : null));
   const yellowData = diffData.map((data) => (data > 0 ? data : null));
-  const redData = catData.map((data, index) => (diffData[index] <= 0 ? data : null));
+  const redData = catData.map((data, index) => (diffData[index] < 0 ? data : null));
 
   return (
     <>
@@ -528,10 +528,10 @@ function HomePage() {
       <Dialog open={openEditTransaction} onClose={handleCloseEditTransaction}>
         <DialogTitle>Edit Transaction</DialogTitle>
         <DialogContent>
-            <DialogContentText>
+          <DialogContentText>
             Update the amount or description for this transaction.
-            </DialogContentText>
-            <TextField
+          </DialogContentText>
+          <TextField
             autoFocus
             margin="dense"
             label="Amount"
@@ -541,8 +541,8 @@ function HomePage() {
             value={editTxValue}
             onChange={handleEditTxValueInput}
             required
-            />
-            <TextField
+          />
+          <TextField
             margin="dense"
             label="Description"
             type="text"
@@ -551,11 +551,11 @@ function HomePage() {
             value={editTxDesc}
             onChange={handleEditTxDescInput}
             required
-            />
+          />
         </DialogContent>
         <DialogActions>
-            <Button onClick={handleCloseEditTransaction}>Cancel</Button>
-            <Button onClick={updateTransaction} variant="contained">Save Changes</Button>
+          <Button onClick={handleCloseEditTransaction}>Cancel</Button>
+          <Button onClick={updateTransaction} variant="contained">Save Changes</Button>
         </DialogActions>
       </Dialog>
 
@@ -621,15 +621,36 @@ function HomePage() {
       </Dialog>
 
       <Box sx={{ p: { xs: 1, sm: 2, md: 3 } }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-            Dashboard
-          </Typography>
-          <Button 
-            variant="outlined" 
-            color="secondary" 
-            startIcon={<LogoutIcon />} 
+
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          flexDirection: { xs: 'column', sm: 'row' },
+          mb: 3
+        }}>
+
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: { xs: 2, sm: 0 } }}>
+            <Box sx={{
+              backgroundColor: 'primary.main',
+              borderRadius: '50%',
+              padding: '6px',
+              display: 'inline-flex',
+              marginRight: '12px'
+            }}>
+              <AttachMoneyIcon sx={{ color: 'primary.contrastText', fontSize: '24px' }} />
+            </Box>
+            <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
+              FINANCE TRACKING APP
+            </Typography>
+          </Box>
+
+          <Button
+            variant="outlined"
+            color="secondary"
+            startIcon={<LogoutIcon />}
             onClick={handleLogout}
+            sx={{ width: { xs: '100%', sm: 'auto' } }}
           >
             Log Out
           </Button>
@@ -675,7 +696,7 @@ function HomePage() {
                     data: categories.map((cat) => cat.name.substring(0, 10)),
                   }]}
                   yAxis={[{ min: 0, tickMinStep: 50 }]}
-                  margin={{ top: 60, bottom: 30, left: 50, right: 20 }}
+                  margin={{ top: 60, bottom: 50, left: 30, right: 70 }}
                   grid={{ horizontal: true }}
                   slotProps={{
                     legend: {
@@ -753,9 +774,9 @@ function HomePage() {
               <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
                 Recent Transactions
               </Typography>
-              <Button 
-                variant="contained" 
-                startIcon={<AttachMoneyIcon />} 
+              <Button
+                variant="contained"
+                startIcon={<AttachMoneyIcon />}
                 onClick={handleOpenAddExpense}
                 disabled={noCategoriesExist}
                 size="small"
