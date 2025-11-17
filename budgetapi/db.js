@@ -23,6 +23,8 @@ const userSchema = new mongoose.Schema(
     role: { type: String, default: "user" },
     isEmailVerified: { type: Boolean, default: false },
     emailVerificationToken: String,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
   },
   { timestamps: true, collection: "users" }
 );
@@ -63,6 +65,60 @@ async function findUserByEmail(email) {
 async function findUserByEmailAndToken(email, token) {
     return User.findOne({ email, emailVerificationToken: token }).lean();
 }
+
+async function createPasswordResetRequest(email) {
+  // Find the user by email
+  const user = await User.findOne({ email });
+  if (!user) {
+    return null;
+  }
+
+  const token = generateRandomString(32);
+  const expires = new Date(Date.now() + 1000 * 60 * 60); // 1 hour
+
+  user.resetPasswordToken = token;
+  user.resetPasswordExpires = expires;
+  await user.save();
+
+  const resetUrl = `${process.env.SITE_URL}/reset-password?email=${encodeURIComponent(
+    user.email
+  )}&code=${token}`;
+
+  await sendEmail(
+    user.email,
+    "Reset your BudgetApp password",
+    `<p>Hi ${user.name || ""},</p>
+     <p>We received a request to reset your password.</p>
+     <p>You can reset it by clicking the link below (valid for 1 hour):</p>
+     <p><a href="${resetUrl}">${resetUrl}</a></p>
+     <p>Best regards,<br/>The BudgetApp Team</p>`
+  );
+
+  return {
+    _id: user._id,
+    email: user.email,
+    name: user.name,
+  };
+}
+
+async function findUserByResetToken(email, token) {
+  return User.findOne({
+    email,
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: new Date() },
+  }).lean();
+}
+
+async function updateUserPasswordAfterReset({ userId, passwordHash }) {
+  return User.updateOne(
+    { _id: userId },
+    {
+      $set: { passwordHash },
+      $unset: { resetPasswordToken: "", resetPasswordExpires: "" },
+    }
+  );
+}
+
 
 async function createUser({ name, email, passwordHash}) {
   const u = await User.create({
@@ -175,4 +231,7 @@ module.exports = {
   getTransactions,
   getUserTransactions,
   deleteUserCascade,
+  createPasswordResetRequest,
+  findUserByResetToken,
+  updateUserPasswordAfterReset,
 };

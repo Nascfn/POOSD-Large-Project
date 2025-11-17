@@ -20,7 +20,6 @@ const {
   findUserByEmailAndToken,
   createUser,
   getUsers,
-  deleteUserCascade,
   // goals
   createGoal,
   getUserGoals,
@@ -32,6 +31,9 @@ const {
   deleteTransaction,
   getTransactions,
   getUserTransactions,
+  createPasswordResetRequest,
+  findUserByResetToken,
+  updateUserPasswordAfterReset,
   // models
   Goal,
 } = require("./db.js");
@@ -173,6 +175,61 @@ app.post(`${apiRoute}/auth/login`, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Login failed" });
+  }
+});
+
+// FORGOT PASSWORD - request reset link
+app.post(`${apiRoute}/auth/forgot-password`, async (req, res) => {
+  try {
+    const { email } = req.body || {};
+    if (!email) {
+      return res.status(400).json({ error: "Missing email" });
+    }
+    await createPasswordResetRequest(email);
+
+    return res.json({
+      message:
+        "Password reset link has been sent.",
+    });
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    return res
+      .status(500)
+      .json({ error: "Failed to process forgot password request" });
+  }
+});
+
+// RESET PASSWORD - actually change the password using the token
+app.post(`${apiRoute}/auth/reset-password`, async (req, res) => {
+  try {
+    const { email, code, newPassword } = req.body || {};
+
+    if (!email || !code || !newPassword) {
+      return res.status(400).json({ error: "Missing fields" });
+    }
+
+    if (newPassword.length < 6) {
+      return res
+        .status(400)
+        .json({ error: "Password must be at least 6 characters long" });
+    }
+
+    const user = await findUserByResetToken(email, code);
+    if (!user) {
+      return res
+        .status(400)
+        .json({ error: "Invalid or expired reset link" });
+    }
+
+    // Hash the new password
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+
+    await updateUserPasswordAfterReset({ userId: user._id, passwordHash });
+
+    return res.json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error("Reset password error:", err);
+    return res.status(500).json({ error: "Failed to reset password" });
   }
 });
 
