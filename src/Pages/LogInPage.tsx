@@ -13,6 +13,7 @@ import Link from '@mui/material/Link';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { useNavigate } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
+import { APP_NAME } from "../constants";
 
 function LogInPage() {
   const navigate = useNavigate();
@@ -137,7 +138,7 @@ function LogInPage() {
                   <AttachMoneyIcon sx={{ color: 'primary.contrastText', fontSize: '24px' }} />
                 </Box>
                 <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
-                  FINANCE TRACKING APP
+                  {APP_NAME}
                 </Typography>
               </Box>
 

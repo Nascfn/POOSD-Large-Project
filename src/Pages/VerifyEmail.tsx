@@ -3,6 +3,7 @@ import { Box, Typography, Paper, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
+import { APP_NAME } from '../constants';
 
 const VerifyEmail: React.FC = () => {
   return (
@@ -38,7 +39,7 @@ const VerifyEmail: React.FC = () => {
               <AttachMoneyIcon sx={{ color: 'primary.contrastText', fontSize: '24px' }} />
            </Box>
            <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
-             FINANCE TRACKING APP
+            {APP_NAME}
            </Typography>
         </Box>
         

@@ -11,6 +11,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { useNavigate } from "react-router-dom";
+import { APP_NAME } from "../constants";
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -182,7 +183,7 @@ function RegisterPage() {
                   <AttachMoneyIcon sx={{ color: 'primary.contrastText', fontSize: '24px' }} />
                 </Box>
                 <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
-                  FINANCE TRACKING APP
+                  {APP_NAME}
                 </Typography>
               </Box>
 

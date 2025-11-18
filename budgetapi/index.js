@@ -120,6 +120,24 @@ function generateToken(user) {
     );
 }
 
+// Client app endpoints
+
+app.get('/homepage', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', '/index.html'));
+});
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', '/index.html'));
+});
+app.get('/please-verify', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', '/index.html'));
+});
+app.get('/forgot-password', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', '/index.html'));
+});
+app.get('/reset-password', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', '/index.html'));
+});
+
 // Auth
 
 // SIGNUP

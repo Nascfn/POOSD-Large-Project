@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Paper, TextField, Button, CircularProgress, Collapse, Alert } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import { APP_NAME } from '../constants';
 
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
@@ -93,7 +94,7 @@ const ResetPassword: React.FC = () => {
               <AttachMoneyIcon sx={{ color: 'primary.contrastText', fontSize: '24px' }} />
            </Box>
            <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
-             FINANCE TRACKING APP
+            {APP_NAME}
            </Typography>
         </Box>
 

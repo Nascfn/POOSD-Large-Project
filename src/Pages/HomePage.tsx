@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import LogoutIcon from '@mui/icons-material/Logout';
 import IconButton from "@mui/material/IconButton";
 import { grey, blue, orange, green } from '@mui/material/colors';
+import { APP_NAME } from "../constants";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -641,7 +642,7 @@ function HomePage() {
               <AttachMoneyIcon sx={{ color: 'primary.contrastText', fontSize: '24px' }} />
             </Box>
             <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
-              FINANCE TRACKING APP
+              {APP_NAME}
             </Typography>
           </Box>
 
