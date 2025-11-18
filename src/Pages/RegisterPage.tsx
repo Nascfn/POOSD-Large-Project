@@ -24,7 +24,7 @@ function RegisterPage() {
   const [open, setOpen] = React.useState(false);
   const [openSuccess, setOpenSuccess] = React.useState(false);
 
-   const handleEmailInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmailValue(event.target.value);
   };
 
@@ -49,7 +49,7 @@ function RegisterPage() {
     return emailRegex.test(email);
   }
 
-const handleRegister = async () => {
+  const handleRegister = async () => {
     if (
       !firstNameValue ||
       !lastNameValue ||
@@ -80,8 +80,8 @@ const handleRegister = async () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ 
-            name: `${firstNameValue} ${lastNameValue}`, 
+          body: JSON.stringify({
+            name: `${firstNameValue} ${lastNameValue}`,
             email: emailValue,
             password: passwordValue,
           }),
@@ -96,11 +96,11 @@ const handleRegister = async () => {
         } else {
           localStorage.setItem('authToken', data.token);
           setErrorMessage("Successfully Registered! You are now logged in.");
-          setOpen(false); 
+          setOpen(false);
           setOpenSuccess(true);
-          
+
           setTimeout(() => {
-             navigate("/homepage");
+            navigate("/please-verify");
           }, 2000);
         }
       } catch (err) {
@@ -127,39 +127,39 @@ const handleRegister = async () => {
         <Card
           sx={{
             width: { xs: "95%", sm: "80%", md: "60%", lg: "30%" },
-            maxWidth: 450, 
+            maxWidth: 450,
             margin: "auto",
             p: { xs: 2, sm: 3 },
             borderRadius: (theme) => theme.shape.borderRadius,
-            backgroundColor: 'background.paper', 
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)', 
+            backgroundColor: 'background.paper',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
           }}
         >
           <CardContent>
-             {/* Alerts */}
+            {/* Alerts */}
             <Collapse in={open} sx={{ width: '100%', mb: 2 }}>
-                <Alert
+              <Alert
                 severity="error"
                 action={
-                    <IconButton aria-label="close" size="small" onClick={() => setOpen(false)}>
-                        <CloseIcon fontSize="inherit" />
-                    </IconButton>
+                  <IconButton aria-label="close" size="small" onClick={() => setOpen(false)}>
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
                 }
-                >
+              >
                 {errorMessage}
-                </Alert>
+              </Alert>
             </Collapse>
             <Collapse in={openSuccess} sx={{ width: '100%', mb: 2 }}>
-                <Alert
+              <Alert
                 severity="success"
                 action={
-                    <IconButton aria-label="close" size="small" onClick={() => setOpenSuccess(false)}>
-                        <CloseIcon fontSize="inherit" />
-                    </IconButton>
+                  <IconButton aria-label="close" size="small" onClick={() => setOpenSuccess(false)}>
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
                 }
-                >
+              >
                 {errorMessage}
-                </Alert>
+              </Alert>
             </Collapse>
 
             <Box
@@ -172,18 +172,18 @@ const handleRegister = async () => {
             >
               {/* Title */}
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                 <Box sx={{
-                    backgroundColor: 'primary.main',
-                    borderRadius: '50%',
-                    padding: '6px',
-                    display: 'inline-flex',
-                    marginRight: '12px'
-                 }}>
-                    <AttachMoneyIcon sx={{ color: 'primary.contrastText', fontSize: '24px' }} />
-                 </Box>
-                 <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
-                   FINANCE TRACKING APP
-                 </Typography>
+                <Box sx={{
+                  backgroundColor: 'primary.main',
+                  borderRadius: '50%',
+                  padding: '6px',
+                  display: 'inline-flex',
+                  marginRight: '12px'
+                }}>
+                  <AttachMoneyIcon sx={{ color: 'primary.contrastText', fontSize: '24px' }} />
+                </Box>
+                <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
+                  FINANCE TRACKING APP
+                </Typography>
               </Box>
 
               {/* Header */}
@@ -202,22 +202,22 @@ const handleRegister = async () => {
               <Button
                 fullWidth
                 variant="contained"
-                color="primary" // Use theme green
+                color="primary" 
                 onClick={handleRegister}
-                sx={{ mt: 2, py: 1.5 }} // Margin top and padding
+                sx={{ mt: 2, py: 1.5 }} 
               >
                 Register
               </Button>
 
               {/* Log In */}
-               <Button
-                  fullWidth
-                  variant="text"
-                  onClick={() => navigate("/")}
-                  sx={{ mt: 1, color: 'text.secondary' }} // Secondary text color
-                >
-                  Already have an account? Log In
-                </Button>
+              <Button
+                fullWidth
+                variant="text"
+                onClick={() => navigate("/")}
+                sx={{ mt: 1, color: 'text.secondary' }} 
+              >
+                Already have an account? Log In
+              </Button>
 
             </Box>
           </CardContent>

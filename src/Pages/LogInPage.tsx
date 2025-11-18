@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import Link from '@mui/material/Link';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 function LogInPage() {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ function LogInPage() {
     return emailRegex.test(email);
   }
 
-const handleLogIn = async () => {
+  const handleLogIn = async () => {
     if (!emailValue || !passwordValue) {
       setErrorMessage("Please enter an email and password.");
       setOpen(true);
@@ -44,7 +45,7 @@ const handleLogIn = async () => {
       setOpen(true);
       return;
     } else {
-      
+
       // API Call
       try {
         const response = await fetch('/api/auth/login', {
@@ -58,7 +59,7 @@ const handleLogIn = async () => {
           }),
         });
 
-        const data = await response.json(); 
+        const data = await response.json();
 
         if (!response.ok) {
           setErrorMessage(data.error || 'Log in failed. Please try again.');
@@ -77,7 +78,7 @@ const handleLogIn = async () => {
 
   return (
     <>
-      {}
+      { }
       <Box
         sx={{
           minHeight: "100vh",
@@ -89,31 +90,31 @@ const handleLogIn = async () => {
       >
         <Card
           sx={{
-            width: { xs: "95%", sm: "80%", md: "60%", lg: "30%" }, 
-            maxWidth: 400, 
+            width: { xs: "95%", sm: "80%", md: "60%", lg: "30%" },
+            maxWidth: 400,
             margin: "auto",
-            p: { xs: 2, sm: 3 }, 
-            borderRadius: (theme) => theme.shape.borderRadius, 
+            p: { xs: 2, sm: 3 },
+            borderRadius: (theme) => theme.shape.borderRadius,
             backgroundColor: 'background.paper',
           }}
         >
           <CardContent>
             {/* Collapse for Error Alert */}
-             <Collapse in={open} sx={{ width: '100%', mb: 2 }}>
-                <Alert
+            <Collapse in={open} sx={{ width: '100%', mb: 2 }}>
+              <Alert
                 severity="error"
                 action={
-                    <IconButton
+                  <IconButton
                     aria-label="close"
                     size="small"
                     onClick={() => setOpen(false)}
-                    >
+                  >
                     <CloseIcon fontSize="inherit" />
-                    </IconButton>
+                  </IconButton>
                 }
-                >
+              >
                 {errorMessage}
-                </Alert>
+              </Alert>
             </Collapse>
 
             <Box
@@ -126,18 +127,18 @@ const handleLogIn = async () => {
             >
               {/* Title */}
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                 <Box sx={{
-                    backgroundColor: 'primary.main',
-                    borderRadius: '50%',
-                    padding: '6px',
-                    display: 'inline-flex',
-                    marginRight: '12px'
-                 }}>
-                    <AttachMoneyIcon sx={{ color: 'primary.contrastText', fontSize: '24px' }} />
-                 </Box>
-                 <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
-                   FINANCE TRACKING APP
-                 </Typography>
+                <Box sx={{
+                  backgroundColor: 'primary.main',
+                  borderRadius: '50%',
+                  padding: '6px',
+                  display: 'inline-flex',
+                  marginRight: '12px'
+                }}>
+                  <AttachMoneyIcon sx={{ color: 'primary.contrastText', fontSize: '24px' }} />
+                </Box>
+                <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: 'text.secondary' }}>
+                  FINANCE TRACKING APP
+                </Typography>
               </Box>
 
               {/* Log In */}
@@ -174,32 +175,30 @@ const handleLogIn = async () => {
                 variant="contained"
                 color="primary"
                 onClick={handleLogIn}
-                sx={{ mt: 2, py: 1.5 }} 
+                sx={{ mt: 2, py: 1.5 }}
               >
                 Log In
               </Button>
 
-              {/* Forgot password. To implement? */}
+              {/* Forgot password*/}
               <Link
-                href="#"
+                component={RouterLink}
+                to="/forgot-password"
                 variant="body2"
-                onClick={(e) => e.preventDefault()}
                 sx={{ mt: 1, alignSelf: 'center', color: 'primary.main' }}
               >
                 Forgot Password?
               </Link>
 
-              {/* Space */}
               <Box sx={{ height: '10px' }} />
 
-               {/* Register */}
-               <Button
-                  variant="text"
-                  onClick={() => navigate("/register")}
-                   sx={{ color: 'text.secondary' }}
-                >
-                  Don't have an account? Register
-                </Button>
+              <Button
+                variant="text"
+                onClick={() => navigate("/register")}
+                sx={{ color: 'text.secondary' }}
+              >
+                Don't have an account? Register
+              </Button>
             </Box>
           </CardContent>
         </Card>

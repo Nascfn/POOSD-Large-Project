@@ -26,7 +26,7 @@ import Stack from '@mui/material/Stack';
 import { useNavigate } from "react-router-dom";
 import LogoutIcon from '@mui/icons-material/Logout';
 import IconButton from "@mui/material/IconButton";
-import { grey, blue, red, orange, green } from '@mui/material/colors';
+import { grey, blue, orange, green } from '@mui/material/colors';
 
 function HomePage() {
   const navigate = useNavigate();
